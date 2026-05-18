@@ -20,7 +20,6 @@ class Subgroup(BaseModel):
     Модель подгруппы
     subject_id — внешний ключ к предмету (дисциплине)
     """
-    id = AutoField()
     group_id = IntegerField(verbose_name='ID группы')
     name = CharField(verbose_name='Название подгруппы')
     discipline_id = IntegerField(verbose_name='ID предмета')  # ← вместо category
@@ -32,15 +31,13 @@ class Subgroup(BaseModel):
         )
     
     def __str__(self):
-        return f"Подгруппа {self.name} (предмет {self.subject_id}) - группа {self.group_id}"
-
+        return f"Подгруппа {self.name} (предмет {self.discipline_id}) - группа {self.group_id}"
 
 class SubgroupStudent(BaseModel):
     """
     Модель связи подгруппы и студента
     """
-    id = AutoField()
-    subgroup_id = IntegerField(verbose_name='ID подгруппы')
+    subgroup_id = ForeignKeyField(Subgroup, verbose_name='ID подгруппы', backref='students')
     student_id = IntegerField(verbose_name='ID студента')
     
     class Meta:
@@ -65,18 +62,6 @@ def init_db():
     finally:
         if not db.is_closed():
             db.close()
-
-
-def get_db_connection():
-    if db.is_closed():
-        db.connect()
-    return db
-
-
-def close_db_connection():
-    if not db.is_closed():
-        db.close()
-
 
 if __name__ == '__main__':
     print("=" * 50)
