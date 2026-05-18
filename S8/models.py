@@ -23,7 +23,7 @@ class Subgroup(BaseModel):
     id = AutoField()
     group_id = IntegerField(verbose_name='ID группы')
     name = CharField(verbose_name='Название подгруппы')
-    subject_id = IntegerField(verbose_name='ID предмета')  # ← вместо category
+    discipline_id = IntegerField(verbose_name='ID предмета')  # ← вместо category
     
     class Meta:
         table_name = 'subgroups'
