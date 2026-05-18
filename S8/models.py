@@ -1,5 +1,6 @@
-"""""
-Модели для сервиса подгрупп (Subgroup Service) - Вариант 8
+"""
+Модели для сервиса подгрупп (Subgroup Service) - Вариант №8
+Синхронизировано с doc.md (без subgroup_types, добавлена связь со студентами)
 """
 
 from peewee import *
@@ -17,19 +18,20 @@ class BaseModel(Model):
     class Meta:
         database = db
 
-class SubgroupType(BaseModel):
-    class Meta:
-        table_name = 'subgroup_types'
 
 class Subgroup(BaseModel):
+    """
+    Модель подгруппы
+    Соответствует таблице 'subgroups' из doc.md
+    """
     id = AutoField()
-    name = ForeignKeyField(SubgroupType, verbose_name='ID типа подгруппы')  # ← исправленная строка
-    group_id = IntegerField(verbose_name='ID группы')
+    name = CharField(verbose_name='Название подгруппы')  # language, sport, other
+    group_id = IntegerField(verbose_name='ID группы')    # Внешний ключ к группе
     
     class Meta:
         table_name = 'subgroups'
         indexes = (
-            (('group_id', 'name'), True),
+            (('group_id', 'name'), True),  # Уникальная комбинация (group_id, name)
         )
     
     def __str__(self):
@@ -39,11 +41,11 @@ class Subgroup(BaseModel):
 class SubgroupStudent(BaseModel):
     """
     Модель связи подгруппы и студента
-    (Подгруппа_Студент)
+    Соответствует таблице 'subgroup_students' из doc.md
     """
     id = AutoField()
-    subgroup_id = IntegerField(verbose_name='ID подгруппы')  # FK на Subgroup
-    student_id = IntegerField(verbose_name='ID студента')   # FK на Student
+    subgroup_id = IntegerField(verbose_name='ID подгруппы')  # Внешний ключ к Subgroup
+    student_id = IntegerField(verbose_name='ID студента')    # Внешний ключ к Student
     
     class Meta:
         table_name = 'subgroup_students'
@@ -64,7 +66,7 @@ def init_db():
         # Подключаемся к БД
         db.connect()
         
-        # Создаём таблицы (Subgroup и SubgroupStudent)
+        # Создаём таблицы (только Subgroup и SubgroupStudent)
         db.create_tables([Subgroup, SubgroupStudent], safe=True)
         
         print(f"✅ База данных '{DB_PATH}' успешно инициализирована")
@@ -102,7 +104,7 @@ if __name__ == '__main__':
     Точка входа: вызывается при запуске файла напрямую
     """
     print("=" * 50)
-    print("Инициализация базы данных для сервиса подгрупп (вариант 8)")
+    print("Инициализация базы данных для сервиса подгрупп (вариант №8)")
     print("=" * 50)
     init_db()
     print("=" * 50)
